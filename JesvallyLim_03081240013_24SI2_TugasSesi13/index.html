@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Hotel OS</title>
+    
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Memuat Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ikon (Ionicons) -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- (BARU) Memuat Chart.js untuk Laporan -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Memuat CSS Kustom -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Konfigurasi Tailwind (untuk font Inter) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- ===== Sidebar ===== -->
+        <aside id="sidebar" class="w-64 bg-gray-900 text-gray-300 flex-shrink-0 p-4 transform -translate-x-full md:translate-x-0 z-30 fixed md:static h-full transition-transform duration-300 ease-in-out">
+            <div class="flex items-center justify-between mb-8">
+                <!-- Logo -->
+                <a href="#" class="text-white text-2xl font-bold flex items-center">
+                    <svg class="w-8 h-8 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    <span>Zenith</span>
+                </a>
+                <!-- Tombol Close Mobile -->
+                <button id="close-menu" class="md:hidden text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Menu Navigasi -->
+            <nav>
+                <a href="#" class="nav-link active-link flex items-center px-4 py-3 rounded-lg text-white bg-blue-600" data-target="dashboard">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6-4a1 1 0 001-1v-1a1 1 0 10-2 0v1a1 1 0 001 1zm5 0a1 1 0 001-1v-1a1 1 0 10-2 0v1a1 1 0 001 1z"></path></svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg hover:bg-gray-800 hover:text-white" data-target="pemesanan">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Pemesanan
+                </a>
+                <a href="#" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg hover:bg-gray-800 hover:text-white" data-target="kamar">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Kamar
+                </a>
+                <a href="#" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg hover:bg-gray-800 hover:text-white" data-target="tamu">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    Tamu
+                </a>
+                <a href="#" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg hover:bg-gray-800 hover:text-white" data-target="laporan">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Laporan
+                </a>
+                <a href="#" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg hover:bg-gray-800 hover:text-white" data-target="pengaturan">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Pengaturan
+                </a>
+                <!-- ===== Link Kontak Baru ===== -->
+                <a href="#" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg hover:bg-gray-800 hover:text-white" data-target="kontak">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Hubungi Kami
+                </a>
+            </nav>
+        </aside>
+        <!-- ===== /Sidebar ===== -->
+
+        <!-- ===== Konten Utama ===== -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-md p-4 flex justify-between items-center z-10">
+                <!-- Tombol Menu Mobile -->
+                <button id="menu-toggle" class="md:hidden text-gray-600 hover:text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <!-- Search Bar -->
+                <div class="relative w-full max-w-md hidden md:block">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </span>
+                    <input type="text" class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Cari tamu, kamar...">
+                </div>
+
+                <!-- Ikon User -->
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341A6.002 6.002 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </button>
+                    <img class="w-10 h-10 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=User" alt="User Avatar">
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
+                
+                <!-- ===== Section: Dashboard ===== -->
+                <div id="dashboard" class="content-section active">
+                    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Dashboard</h1>
+                    
+                    <!-- Grid Statistik -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Check-in Hari Ini</p>
+                                <p class="text-2xl font-bold text-gray-800">32</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4">
+                            <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Check-out Hari Ini</p>
+                                <p class="text-2xl font-bold text-gray-800">18</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Kamar Tersedia</p>
+                                <p class="text-2xl font-bold text-gray-800">54 / 120</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Total Tamu</p>
+                                <p class="text-2xl font-bold text-gray-800">86</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Pemesanan Terbaru -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <h2 class="text-xl font-semibold text-gray-700 p-6">Pemesanan Terbaru</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Tamu</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Check-in</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe Kamar</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Ahmad Subagja</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Nov 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Deluxe King</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Dikonfirmasi
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Siti Lestari</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Nov 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Standard Twin</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Menunggu
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Budi Santoso</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">16 Nov 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Suite</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Dikonfirmasi
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Dashboard ===== -->
+
+                <!-- ===== Section: Pemesanan ===== -->
+                <div id="pemesanan" class="content-section">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-3xl font-semibold text-gray-800">Manajemen Pemesanan</h1>
+                        <button id="open-modal-btn" class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            Tambah Pemesanan
+                        </button>
+                    </div>
+
+                    <!-- Tabel Pemesanan Penuh -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID Booking</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Tamu</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Check-in</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Check-out</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipe Kamar</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Data dummy -->
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-500">#BK1023</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">Ahmad Subagja</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">15 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">17 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Deluxe King</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Dikonfirmasi</span></td>
+                                        <td class="px-6 py-4 text-sm font-medium space-x-2">
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-500">#BK1024</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">Siti Lestari</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">15 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">16 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Standard Twin</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span></td>
+                                        <td class="px-6 py-4 text-sm font-medium space-x-2">
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-500">#BK1025</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">Budi Santoso</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">16 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">20 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Suite</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Dikonfirmasi</span></td>
+                                        <td class="px-6 py-4 text-sm font-medium space-x-2">
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-500">#BK1026</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">Rini Wulandari</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">18 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">19 Nov 2025</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Standard Queen</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Dibatalkan</span></td>
+                                        <td class="px-6 py-4 text-sm font-medium space-x-2">
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Pemesanan ===== -->
+
+                <!-- ===== Section: Kamar ===== -->
+                <div id="kamar" class="content-section">
+                    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Status Kamar</h1>
+                    
+                    <!-- Filter Kamar -->
+                    <div class="mb-6 flex flex-wrap gap-2">
+                        <button class="filter-btn-kamar bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium" data-status="semua">Semua (8)</button>
+                        <button class="filter-btn-kamar bg-white text-gray-700 px-4 py-2 rounded-full text-sm font-medium border border-gray-300 hover:bg-gray-50" data-status="tersedia">Tersedia (3)</button>
+                        <button class="filter-btn-kamar bg-white text-gray-700 px-4 py-2 rounded-full text-sm font-medium border border-gray-300 hover:bg-gray-50" data-status="ditempati">Ditempati (3)</button>
+                        <button class="filter-btn-kamar bg-white text-gray-700 px-4 py-2 rounded-full text-sm font-medium border border-gray-300 hover:bg-gray-50" data-status="dibersihkan">Perlu Dibersihkan (2)</button>
+                    </div>
+
+                    <!-- Grid Kamar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        <!-- Kamar 1: Tersedia -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-green-500 room-card" data-status="tersedia">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">101</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Deluxe King</p>
+                                <p class="text-sm text-gray-400 mt-2">Lantai 1</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 2: Ditempati -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-red-500 room-card" data-status="ditempati">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">102</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditempati</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Deluxe King</p>
+                                <p class="text-sm text-gray-400 mt-2">A. Subagja (s/d 17 Nov)</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 3: Perlu Dibersihkan -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-yellow-500 room-card" data-status="dibersihkan">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">103</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Perlu Dibersihkan</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Standard Twin</p>
+                                <p class="text-sm text-gray-400 mt-2">Lantai 1</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 4: Tersedia -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-green-500 room-card" data-status="tersedia">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">104</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Standard Twin</p>
+                                <p class="text-sm text-gray-400 mt-2">Lantai 1</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 5: Ditempati -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-red-500 room-card" data-status="ditempati">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">201</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditempati</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Suite</p>
+                                <p class="text-sm text-gray-400 mt-2">B. Santoso (s/d 20 Nov)</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 6: Ditempati -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-red-500 room-card" data-status="ditempati">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">202</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Ditempati</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Suite</p>
+                                <p class="text-sm text-gray-400 mt-2">Keluarga Wijaya (s/d 18 Nov)</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 7: Perlu Dibersihkan -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-yellow-500 room-card" data-status="dibersihkan">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">203</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Perlu Dibersihkan</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Standard Queen</p>
+                                <p class="text-sm text-gray-400 mt-2">Lantai 2</p>
+                            </div>
+                        </div>
+                        <!-- Kamar 8: Tersedia -->
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-green-500 room-card" data-status="tersedia">
+                            <div class="p-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-xl font-bold text-gray-800">204</p>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Standard Queen</p>
+                                <p class="text-sm text-gray-400 mt-2">Lantai 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Kamar ===== -->
+
+                <!-- ===== Section: Tamu ===== -->
+                <div id="tamu" class="content-section">
+                    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Manajemen Tamu</h1>
+                    
+                    <!-- (BARU) Konten Manajemen Tamu -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <!-- Search Bar Tamu -->
+                        <div class="mb-4 relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </span>
+                            <input type="text" id="guest-search-input" class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Cari nama tamu...">
+                        </div>
+
+                        <!-- Tabel Daftar Tamu -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-full divide-y divide-gray-200" id="guest-table">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kontak</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Check-in Terakhir</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Contoh Data Tamu 1 -->
+                                    <tr class="guest-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full" src="https://placehold.co/100x100/E2E8F0/4A5568?text=AS" alt="Avatar Ahmad">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Ahmad Subagja</div>
+                                                    <div class="text-sm text-gray-500">ahmad.s@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08123456789</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Nov 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Checked In</span>
+                                        </td>
+                                    </tr>
+                                    <!-- Contoh Data Tamu 2 -->
+                                    <tr class="guest-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full" src="https://placehold.co/100x100/FEF3C7/92400E?text=SL" alt="Avatar Siti">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Siti Lestari</div>
+                                                    <div class="text-sm text-gray-500">siti.lestari@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08987654321</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Nov 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Reservasi</span>
+                                        </td>
+                                    </tr>
+                                    <!-- Contoh Data Tamu 3 -->
+                                    <tr class="guest-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full" src="https://placehold.co/100x100/E0E7FF/1D4ED8?text=BS" alt="Avatar Budi">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Budi Santoso</div>
+                                                    <div class="text-sm text-gray-500">budi.s@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08551234123</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14 Nov 2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Checked Out</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Tamu ===== -->
+                
+                <!-- ===== Section: Laporan ===== -->
+                <div id="laporan" class="content-section">
+                    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Laporan</h1>
+                    
+                    <!-- (BARU) Grid Chart Laporan -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Chart Pendapatan -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h2 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan Bulanan (6 Bulan Terakhir)</h2>
+                            <div class="h-80">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart Tipe Kamar -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h2 class="text-xl font-semibold text-gray-700 mb-4">Tipe Kamar Populer</h2>
+                            <div class="h-80 w-full flex justify-center items-center">
+                                <canvas id="roomTypeChart" class="max-w-xs"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Laporan ===== -->
+
+                <!-- ===== Section: Pengaturan ===== -->
+                <div id="pengaturan" class="content-section">
+                    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Pengaturan</h1>
+                    
+                    <!-- (BARU) Konten Tab Pengaturan -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <!-- Navigasi Tab -->
+                        <div class="border-b border-gray-200">
+                            <nav class="flex -mb-px px-6" aria-label="Tabs">
+                                <button class="tab-btn active" data-target="tab-umum">
+                                    Umum
+                                </button>
+                                <button class="tab-btn" data-target="tab-kamar">
+                                    Tipe Kamar
+                                </button>
+                                <button class="tab-btn" data-target="tab-staf">
+                                    Manajemen Staf
+                                </button>
+                                <button class="tab-btn" data-target="tab-integrasi">
+                                    Integrasi
+                                </button>
+                            </nav>
+                        </div>
+                        
+                        <!-- Konten Tab -->
+                        <div class="p-6">
+                            <!-- Tab 1: Umum -->
+                            <div id="tab-umum" class="tab-content">
+                                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Pengaturan Umum</h2>
+                                <form class="space-y-4 max-w-lg">
+                                    <div>
+                                        <label for="hotelName" class="block text-sm font-medium text-gray-700">Nama Hotel</label>
+                                        <input type="text" id="hotelName" value="Zenith Hotel" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="hotelAddress" class="block text-sm font-medium text-gray-700">Alamat Hotel</label>
+                                        <input type="text" id="hotelAddress" value="Jl. Merdeka No. 123, Medan, Indonesia" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="hotelEmail" class="block text-sm font-medium text-gray-700">Email Kontak</label>
+                                        <input type="email" id="hotelEmail" value="info@zenithhotel.id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div class="pt-2">
+                                        <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                                            Simpan Perubahan
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Tab 2: Tipe Kamar -->
+                            <div id="tab-kamar" class="tab-content hidden">
+                                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Pengaturan Tipe Kamar</h2>
+                                <p class="text-gray-600">Form untuk menambah, mengedit, dan mengatur harga tipe kamar akan ada di sini.</p>
+                                <!-- Placeholder untuk manajemen tipe kamar -->
+                            </div>
+                            
+                            <!-- Tab 3: Manajemen Staf -->
+                            <div id="tab-staf" class="tab-content hidden">
+                                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Manajemen Staf</h2>
+                                <p class="text-gray-600">Tabel untuk menambah staf baru dan mengatur hak akses (role) akan ada di sini.</p>
+                                <!-- Placeholder untuk manajemen staf -->
+                            </div>
+
+                            <!-- Tab 4: Integrasi -->
+                            <div id="tab-integrasi" class="tab-content hidden">
+                                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Integrasi</h2>
+                                <p class="text-gray-600">Pengaturan untuk API key (mis. Traveloka, Booking.com) akan ada di sini.</p>
+                                <!-- Placeholder untuk integrasi -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Pengaturan ===== -->
+
+                <!-- ===== Section: Kontak Baru ===== -->
+                <div id="kontak" class="content-section">
+                    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Hubungi Kami</h1>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Form Kontak -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Kirim Pesan</h2>
+                            <p class="text-gray-600 mb-6">Ada pertanyaan? Isi form di bawah dan kami akan segera menghubungi Anda.</p>
+                            
+                            <form id="contact-form">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="contactName" class="block text-sm font-medium text-gray-700">Nama Anda</label>
+                                        <input type="text" id="contactName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="contactEmail" class="block text-sm font-medium text-gray-700">Email Anda</label>
+                                        <input type="email" id="contactEmail" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="contactMessage" class="block text-sm font-medium text-gray-700">Pesan</label>
+                                        <textarea id="contactMessage" rows="5" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                    </div>
+                                    <div>
+                                        <button type="submit" id="submit-contact-form" class="w-full px-5 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                                            Kirim Pesan
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Info Kontak & WhatsApp -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Info Kontak</h2>
+                            <p class="text-gray-600 mb-6">Anda juga bisa menghubungi kami langsung melalui WhatsApp untuk respon yang lebih cepat.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">Alamat</h3>
+                                        <p class="text-gray-500">Jl. Merdeka No. 123, Medan, Indonesia</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">Telepon</h3>
+                                        <p class="text-gray-500">(061) 123-4567</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">Email</h3>
+                                        <p class="text-gray-500">info@zenithhotel.id</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="https://wa.me/6281234567890" target="_blank" class="mt-8 w-full px-5 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300 flex items-center justify-center">
+                                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.451 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.731 6.086l.099.167-1.025 3.744 3.835-1.004.178.106z"/></svg>
+                                Lanjutkan di WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== /Section: Kontak Baru ===== -->
+
+            </main>
+        </div>
+        <!-- ===== /Konten Utama ===== -->
+    </div>
+
+    <!-- ===== Modal Tambah Pemesanan ===== -->
+    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 transform transition-all opacity-0 -translate-y-10" data-modal-panel>
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-gray-800">Tambah Pemesanan Baru</h2>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Form Modal -->
+            <form id="booking-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="guestName" class="block text-sm font-medium text-gray-700">Nama Tamu</label>
+                        <input type="text" id="guestName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="checkIn" class="block text-sm font-medium text-gray-700">Check-in</label>
+                            <input type="date" id="checkIn" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="checkOut" class="block text-sm font-medium text-gray-700">Check-out</label>
+                            <input type="date" id="checkOut" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="roomType" class="block text-sm font-medium text-gray-700">Tipe Kamar</label>
+                        <select id="roomType" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option>Standard Queen</option>
+                            <option>Standard Twin</option>
+                            <option>Deluxe King</option>
+                            <option>Suite</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="guestEmail" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="guestEmail" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <!-- ===== Fitur Gemini API ===== -->
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-gray-700">Asisten Email</label>
+                            <button type="button" id="generate-email-btn" class="px-3 py-1.5 text-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md shadow-md hover:from-blue-600 hover:to-purple-700 transition duration-300 flex items-center">
+                                ✨ Buat Draft Email
+                            </button>
+                        </div>
+                        
+                        <!-- Loader -->
+                        <div id="gemini-loader" class="gemini-loader hidden my-4 mx-auto"></div>
+                        
+                        <!-- Hasil Draft -->
+                        <div id="email-draft-container" class="mt-3 hidden">
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="email-draft" class="block text-xs font-medium text-gray-500">Draf Email Konfirmasi:</label>
+                                <button type="button" id="copy-draft-btn" class="text-xs text-blue-600 hover:underline">Salin ke Clipboard</button>
+                            </div>
+                            <textarea id="email-draft" rows="6" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 text-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            <input type="text" id="copy-helper" style="position: absolute; left: -9999px;">
+                            <span id="copy-success-msg" class="text-xs text-green-600 hidden">Tersalin!</span>
+                        </div>
+                    </div>
+                    <!-- ===== /Fitur Gemini API ===== -->
+
+                </div>
+                <!-- Tombol Aksi Modal -->
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="close-modal-btn-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700">
+                        Simpan Pemesanan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- ===== /Modal ===== -->
+
+    <!-- ===== Modal Sukses Kontak (DIMODIFIKASI) ===== -->
+    <div id="contact-success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 text-center transform transition-all opacity-0 -translate-y-10" data-modal-panel>
+            <div class="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Pesan Terkirim!</h2>
+            <p class="text-gray-600 mb-6">Terima kasih telah menghubungi kami. Untuk respon lebih cepat, silakan hubungi kami via WhatsApp.</p>
+            
+            <!-- Tombol WhatsApp Baru Ditambahkan Di Sini -->
+            <a href="https://wa.me/6281234567890" target="_blank" class="mb-3 w-full px-5 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300 flex items-center justify-center">
+                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.451 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.731 6.086l.099.167-1.025 3.744 3.835-1.004.178.106z"/></svg>
+                Lanjutkan di WhatsApp
+            </a>
+
+            <button id="close-contact-modal" class="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- ===== /Modal Sukses Kontak ===== -->
+
+
+    <!-- Memuat JavaScript Kustom -->
+    <script src="script.js"></script>
+
+</body>
+</html>
